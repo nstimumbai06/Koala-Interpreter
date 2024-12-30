@@ -1,5 +1,11 @@
 thoda_idhar_aye.log("Hello, World!")
-x = ek_kaam_kro: add_kro, +, 1, 2
+x = ek_kaam_kro: add_kro, +, 1, 2, 4, 5
+y = ek_kaam_kro: minus_kro, -, 10, 5
+z = ek_kaam_kro: saurav, *, 4, 5
+
+thoda_idhar_aye.log(x)
+thoda_idhar_aye.log(y)
+thoda_idhar_aye.log(z)
 
 reason_mat_do: throw(zerodivisionerror)
 reason_mat_do: throw(ioerror)

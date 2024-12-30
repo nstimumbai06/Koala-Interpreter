@@ -1,3 +1,5 @@
+import sys
+import os
 import re
 
 class ThodaIdharAye:
@@ -16,4 +18,15 @@ def execute_koala_file(file_path):
             else:
                 print(f"Syntax error: {line}")
 
-execute_koala_file('index.koala')
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print("Usage: koala <path_to_koala_file>")
+        sys.exit(1)
+
+    koala_file = sys.argv[1]
+
+    if not os.path.exists(koala_file):
+        print(f"File not found: {koala_file}")
+        sys.exit(1)
+
+    execute_koala_file(koala_file)

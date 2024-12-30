@@ -1,1 +1,5 @@
-thoda_idhar_aye.log("Hello World")
+thoda_idhar_aye.log("Hello, World!")
+x = ek_kaam_kro: add_kro, +, 1, 2
+
+reason_mat_do: throw(zerodivisionerror)
+reason_mat_do: throw(ioerror)

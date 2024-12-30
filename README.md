@@ -28,7 +28,7 @@
 
 2. Build the **Koala Interpreter** as a standalone executable:
    ```bash
-   pyinstaller --onefile koala_interpreter.py
+   pyinstaller --onefile --name koala koala_interpreter.py
    ```
 
 ---

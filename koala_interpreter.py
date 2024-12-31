@@ -44,7 +44,7 @@ def execute_koala_file(file_path):
                 operands = [int(operand.strip()) if operand.strip().isdigit() else variables.get(operand.strip()) for operand in operands]
 
                 if None in operands:
-                    thoda_idhar_aye.log("Error: Undefined variable used in operation.")
+                    thoda_idhar_aye.log("aayein: Undefined variable used in operation.")
                     continue
 
                 result = evaluate_expression(operator, operands)
@@ -68,10 +68,10 @@ def execute_koala_file(file_path):
                     elif error_type == 'typeerror':
                         raise TypeError("Custom TypeError")
                 except Exception as e:
-                    thoda_idhar_aye.log(f"Caught error: {e}")
+                    thoda_idhar_aye.log(f"aayein: Caught error: {e}")
             
             else:
-                thoda_idhar_aye.log(f"Syntax error: {line}")
+                thoda_idhar_aye.log(f"aayein: Syntax error: {line}")
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
@@ -81,7 +81,7 @@ if __name__ == '__main__':
     koala_file = sys.argv[1]
 
     if not os.path.exists(koala_file):
-        print(f"File not found: {koala_file}")
+        print(f"aayein: File not found: {koala_file}")
         sys.exit(1)
 
     execute_koala_file(koala_file)

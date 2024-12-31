@@ -22,4 +22,5 @@ if %ERRORLEVEL% neq 0 (
 )
 
 echo Build and packaging completed successfully!
+start "" "Output\KoalaInstaller.exe"
 pause

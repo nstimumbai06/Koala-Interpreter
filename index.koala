@@ -1,11 +1,42 @@
-thoda_idhar_aye.log("Hello, World!")
-x = ek_kaam_kro: add_kro, +, 1, 2, 4, 5
-y = ek_kaam_kro: minus_kro, -, 10, 5
-z = ek_kaam_kro: saurav, *, 4, 5
+console.log("Welcome to the TypeScript-like Koala interpreter!");
 
-thoda_idhar_aye.log(x)
-thoda_idhar_aye.log(y)
-thoda_idhar_aye.log(z)
+let a: number = 10;
+let b: number = 20;
+let greeting: string = "Hello, Koala";
 
-reason_mat_do: throw(zerodivisionerror)
-reason_mat_do: throw(ioerror)
+let sum: number = a + b;
+let difference: number = b - a;
+let product: number = a * b;
+let division: number = b / a;
+let remainder: number = b % a;
+let power: number = a ** 2;
+
+console.log("Sum: " + sum);
+console.log("Difference: " + difference);
+console.log("Product: " + product);
+console.log("Division: " + division);
+console.log("Remainder: " + remainder);
+console.log("Power: " + power);
+
+if (a > b) {
+    console.log("a is greater than b");
+} else {
+    console.log("a is not greater than b");
+}
+
+const pi: number = 3.14159;
+console.log("The value of pi is: " + pi);
+
+if (greeting == "Hello, Koala") {
+    console.log("Greeting is correct");
+} else {
+    console.log("Greeting is incorrect");
+}
+
+try {
+    throw("This is a custom error!");
+} catch (e) {
+    console.log("Caught an error: " + e);
+}
+
+console.log("End of the script. Goodbye!");

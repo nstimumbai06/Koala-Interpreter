@@ -2,86 +2,104 @@ import sys
 import os
 import re
 
-class ThodaIdharAye:
-    def log(self, message):
+class Console:
+    @staticmethod
+    def log(message):
         print(message)
 
-thoda_idhar_aye = ThodaIdharAye()
+console = Console()
 
-def execute_koala_file(file_path):
+def execute_ts_file(file_path):
     variables = {}
 
-    def evaluate_expression(operator, operands):
-        if operator == '+':
-            return sum(operands)
-        elif operator == '-':
-            return operands[0] - operands[1]
-        elif operator == '*':
-            return operands[0] * operands[1]
-        elif operator == '/':
-            try:
-                return operands[0] / operands[1]
-            except ZeroDivisionError:
-                return "Error: Division by zero"
+    def evaluate_expression(expression):
+        try:
+            for var in variables:
+                expression = re.sub(rf'\b{var}\b', str(variables[var]), expression)
+            return eval(expression, {"__builtins__": {}})
+        except Exception as e:
+            raise ValueError(f"Invalid expression: {expression}. Error: {e}")
+
+    def parse_condition(condition):
+        try:
+            condition = re.sub(r'\b(\w+)\b', lambda m: str(variables.get(m.group(1), m.group(1))), condition)
+            return eval(condition, {"__builtins__": {}})
+        except Exception as e:
+            console.log(f"Invalid condition: {condition}. Error: {e}")
+            return False
 
     with open(file_path, 'r') as file:
-        for line in file:
-            line = line.strip()
+        lines = file.readlines()
+        i = 0
+        while i < len(lines):
+            line = lines[i].strip()
+
             if line.startswith("//") or not line:
+                i += 1
                 continue
 
-            if match := re.match(r'thoda_idhar_aye\.log\((.*?)\)', line):
+            if match := re.match(r'console\.log\((.*?)\);', line):
                 message = match.group(1).strip()
-                if message in variables:
-                    message = variables[message]
-                thoda_idhar_aye.log(message)
-            
-            elif match := re.match(r'(\w+)?\s*=?\s*ek_kaam_kro:\s*(\w+),\s*(\+|\-|\*|\/),\s*(.*)', line):
-                var_name = match.group(1)
-                func_name = match.group(2)
-                operator = match.group(3)
-                operands = match.group(4).split(',')
-                operands = [int(operand.strip()) if operand.strip().isdigit() else variables.get(operand.strip()) for operand in operands]
+                try:
+                    message = evaluate_expression(message) if '"' not in message else message.strip('"')
+                except ValueError as e:
+                    console.log(f"Error in console.log: {e}")
+                else:
+                    console.log(message)
 
-                if None in operands:
-                    thoda_idhar_aye.log("aayein: Undefined variable used in operation.")
+            elif match := re.match(r'(let|const)\s+(\w+)\s*:\s*(number|string)\s*=\s*(.+);', line):
+                var_type, var_name, var_kind, expression = match.groups()
+
+                try:
+                    value = evaluate_expression(expression) if var_kind == "number" else expression.strip('"')
+                except ValueError as e:
+                    console.log(f"Error: Invalid value for {var_name}. {e}")
+                    i += 1
                     continue
 
-                result = evaluate_expression(operator, operands)
+                if var_kind == "number" and not isinstance(value, (int, float)):
+                    console.log(f"Type Error: Expected a number for variable '{var_name}'")
+                elif var_kind == "string" and not isinstance(value, str):
+                    console.log(f"Type Error: Expected a string for variable '{var_name}'")
+                else:
+                    variables[var_name] = value
 
-                if var_name:
-                    variables[var_name] = result
-            
-            elif match := re.match(r'reason_mat_do:\s*throw\((.*?)\)', line):
-                error_type = match.group(1).strip()
-                try:
-                    if error_type == 'zerodivisionerror':
-                        raise ZeroDivisionError("Custom ZeroDivisionError")
-                    elif error_type == 'ioerror':
-                        raise IOError("Custom IOError")
-                    elif error_type == 'attributeerror':
-                        raise AttributeError("Custom AttributeError")
-                    elif error_type == 'datatypeerror':
-                        raise TypeError("Custom TypeError")
-                    elif error_type == 'importerror':
-                        raise ImportError("Custom ImportError")
-                    elif error_type == 'typeerror':
-                        raise TypeError("Custom TypeError")
-                except Exception as e:
-                    thoda_idhar_aye.log(f"aayein: Caught error: {e}")
-            
+            elif match := re.match(r'if\s*\((.*?)\)\s*{', line):
+                condition = match.group(1).strip()
+                if not parse_condition(condition):
+                    depth = 1
+                    while depth > 0 and i + 1 < len(lines):
+                        i += 1
+                        if '{' in lines[i]:
+                            depth += 1
+                        if '}' in lines[i]:
+                            depth -= 1
+
+            elif match := re.match(r'throw\((.*?)\);', line):
+                error_message = match.group(1).strip()
+                raise Exception(error_message)
+
+            elif line == '}':
+                i += 1
+                continue
+
             else:
-                thoda_idhar_aye.log(f"aayein: Syntax error: {line}")
+                console.log(f"Syntax Error: {line}")
+
+            i += 1
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
-        print("Usage: koala <path_to_koala_file>")
+        print("Usage: ts <path_to_ts_file>")
         sys.exit(1)
 
-    koala_file = sys.argv[1]
+    ts_file = sys.argv[1]
 
-    if not os.path.exists(koala_file):
-        print(f"aayein: File not found: {koala_file}")
+    if not os.path.exists(ts_file):
+        print(f"Error: File not found: {ts_file}")
         sys.exit(1)
 
-    execute_koala_file(koala_file)
+    try:
+        execute_ts_file(ts_file)
+    except Exception as e:
+        print(f"Unhandled Exception: {e}")
